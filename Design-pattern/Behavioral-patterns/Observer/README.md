@@ -1,15 +1,13 @@
 ### Concept
-Strategy Pattern cho phép định nghĩa một nhóm các thuật toán, đóng gói từng thuật toán thành một đối tượng, và làm cho chúng có thể thay thế cho nhau.
+Observer Pattern tạo điều kiện cho một cách để một đối tượng (gọi là “subject”) thông báo và tự động cập nhật tất cả các đối tượng phụ thuộc (gọi là “observers”) về bất kỳ thay đổi nào trong trạng thái của nó.
 
 ### Structure
-Structure của Strategy pattern bao gồm các thành phần:
+Structure của Observer pattern bao gồm các thành phần:
 
-![strategy_structure](../../access/strategy_structure.png)
+![observer_structure](../../access/observer_structure.png)
 
-- Context: Là lớp chứa một tham chiếu đến một đối tượng Strategy. Nó có thể thay đổi đối tượng Strategy tại runtime và cho phép client chọn thuật toán cần thiết thông qua phương thức setStrategy.
-- Strategy Interface: Là interface định nghĩa một nhóm các thuật toán. Mỗi thuật toán được đóng gói và làm cho chúng có thể thay thế lẫn nhau. Interface này có phương thức execute mà các ConcreteStrategies sẽ triển khai.
-- ConcreteStrategies: Đây là các lớp triển khai interface Strategy và cung cấp cài đặt cụ thể cho phương thức execute. Mỗi ConcreteStrategy sẽ có một thuật toán riêng biệt.
-- Client: Đây là lớp sử dụng lớp Context và quyết định sử dụng ConcreteStrategy nào. Nó tạo ra đối tượng Strategy mới và thiết lập nó trong Context bằng phương thức setStrategy. Sau đó, nó gọi phương thức doSomething của Context để thực hiện thuật toán.
+- Publisher (Subject): Đây là lớp chịu trách nhiệm phát đi thông báo đến các Subscriber khi có sự kiện hoặc thay đổi xảy ra. Trong hình ảnh, “Publisher” có phương thức notifySubscribers(), cho thấy nó sẽ thông báo cho tất cả các Subscriber đã đăng ký về sự thay đổi.
+- Subscriber (Observer): Các lớp này đăng ký nhận thông báo từ Publisher và phản ứng lại với thông tin được cung cấp. Mỗi Subscriber có phương thức update(), cho thấy chúng sẽ cập nhật thông tin dựa trên thông báo từ Publisher.
 
 ### Example
 ```
