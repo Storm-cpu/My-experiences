@@ -1,5 +1,9 @@
 ### Concept
-Observer Pattern tạo điều kiện cho một cách để một đối tượng (gọi là “subject”) thông báo và tự động cập nhật tất cả các đối tượng phụ thuộc (gọi là “observers”) về bất kỳ thay đổi nào trong trạng thái của nó.
+Observer Pattern thiết kế cho các đối tượng (observers) đăng ký để nhận thông báo từ một đối tượng khác (subject), khi có sự thay đổi trạng thái.
+
+Ví dụ: Khi chơi game sẽ có một nhân vật chính (subject) và mình muốn các hệ thống khác nhau trong trò chơi như điểm số, máu, kho đồ (observers) được cập nhật mỗi khi nhân vật chính thay đổi trạng thái, như là mất máu hoặc thu thập vật phẩm.
+
+Lý do dùng observer pattern ở đây là để giữ cho mã nguồn gọn gàng và dễ bảo trì, bởi vì mình không cần phải viết mã cứng để thông báo cho từng hệ thống riêng lẻ mỗi khi có sự kiện xảy ra. Thay vào đó, các hệ thống tự đăng ký để nhận thông báo và tự xử lý chúng khi cần thiết.
 
 ### Structure
 Structure của Observer pattern bao gồm các thành phần:
@@ -11,59 +15,87 @@ Structure của Observer pattern bao gồm các thành phần:
 
 ### Example
 ```
-// Strategy Interface
-type PaymentStrategy interface {
-    Pay(amount float32)
+// Subject interface
+type Subject interface {
+    RegisterObserver(o Observer)
+    RemoveObserver(o Observer)
+    NotifyObservers()
 }
 
-// Concrete Strategies
-type CreditCardPayment struct{}
-func (c *CreditCardPayment) Pay(amount float32) {
-    fmt.Printf("Paid %f using Credit Card\n", amount)
+// Observer interface
+type Observer interface {
+    Update(subject Subject)
 }
 
-type PaypalPayment struct{}
-func (p *PaypalPayment) Pay(amount float32) {
-    fmt.Printf("Paid %f using Paypal\n", amount)
+// GameCharacter là subject
+type GameCharacter struct {
+    observers []Observer
+    health    int
 }
 
-// Context
-type PaymentContext struct {
-    strategy PaymentStrategy
-}
-func (p *PaymentContext) SetStrategy(strategy PaymentStrategy) {
-    p.strategy = strategy
-}
-func (p *PaymentContext) Pay(amount float32) {
-    p.strategy.Pay(amount)
+func (g *GameCharacter) RegisterObserver(o Observer) {
+    g.observers = append(g.observers, o)
 }
 
-// Client code
+func (g *GameCharacter) RemoveObserver(o Observer) {
+    var indexToRemove int
+    for i, observer := range g.observers {
+        if observer == o {
+            indexToRemove = i
+            break
+        }
+    }
+    g.observers = append(g.observers[:indexToRemove], g.observers[indexToRemove+1:]...)
+}
+
+func (g *GameCharacter) NotifyObservers() {
+    for _, observer := range g.observers {
+        observer.Update(g)
+    }
+}
+
+func (g *GameCharacter) TakeDamage(amount int) {
+    g.health -= amount
+    g.NotifyObservers()
+}
+
+// HealthSystem là một observer
+type HealthSystem struct{}
+
+func (h *HealthSystem) Update(subject Subject) {
+    // Cập nhật hệ thống sức khỏe dựa trên trạng thái của nhân vật chính
+    if character, ok := subject.(*GameCharacter); ok {
+        fmt.Printf("HealthSystem: Character has %d health remaining\n", character.health)
+    }
+}
+
 func main() {
-    payment := PaymentContext{}
-    payment.SetStrategy(&CreditCardPayment{})
-    payment.Pay(22.30)
+    character := &GameCharacter{health: 100}
+    healthSystem := &HealthSystem{}
 
-    payment.SetStrategy(&PaypalPayment{})
-    payment.Pay(17.50)
+    character.RegisterObserver(healthSystem)
+
+    // Nhân vật chính nhận sát thương và hệ thống sức khỏe được thông báo
+    character.TakeDamage(10)
 }
 ```
 
 ### Applicability
-Strategy pattern thường được áp dụng khi:
+Observer pattern thường được áp dụng khi:
 
-- Có nhiều class chỉ khác nhau về hành vi. Strategy cho phép cấu hình một class với nhiều hành vi khác nhau.
-- Cần tránh sự phụ thuộc vào các phép toán có điều kiện. Thay vì nhiều điều kiện, mỗi hành vi được đóng gói trong một Strategy riêng biệt.
-- Khi muốn thay đổi thuật toán trong runtime.
+- Sử dụng khi một số đối tượng trong ứng dụng phải quan sát những đối tượng khác nhưng chỉ trong một khoảng thời gian giới hạn hoặc trong các trường hợp cụ thể.
+- Khi muốn một đối tượng có khả năng thông báo cho một nhóm các đối tượng khác về sự thay đổi của nó mà không cần quan tâm đến việc nhóm đó gồm những đối tượng nào.
 
 ### Pros and Cons
-Ưu điểm của Strategy pattern:
+Ưu điểm của Observer:
 
-- Tăng cường sự linh hoạt và tái sử dụng mã nguồn.
-- Có thể thay đổi hành vi của một class mà không cần sửa đổi mã nguồn.
-- Tách biệt logic nghiệp vụ và chi tiết cài đặt thuật toán.
+- Dễ dàng thêm hoặc bớt subscribers mà không ảnh hưởng đến publisher.
+- Tạo một mối quan hệ một-đến-nhiều giữa các đối tượng, sao cho khi một đối tượng thay đổi trạng thái, tất cả phụ thuộc của nó được thông báo và cập nhật tự động.
+- Giảm sự phụ thuộc lẫn nhau giữa các đối tượng, làm cho mã nguồn dễ bảo trì và mở rộng hơn.
+- Cho phép các đối tượng có thể tương tác với nhau mà không cần biết chi tiết về nhau, tăng tính mô-đun và tái sử dụng mã nguồn.
 
-Nhược điểm của Strategy pattern:
+Nhược điểm của Observer:
 
-- Phức tạp hóa mã nguồn do sự gia tăng số lượng class và đối tượng.
-- Cần phải quản lý đối tượng Strategy, có thể dẫn đến tăng chi phí về bộ nhớ nếu không được quản lý cẩn thận.
+- Cần quản lý đăng ký và hủy đăng ký cẩn thận để tránh rò rỉ bộ nhớ.
+- Nếu có nhiều subscribers, việc thông báo có thể chậm và tốn kém về hiệu suất.
+- Thứ tự thông báo đến các subscribers có thể khó kiểm soát, dẫn đến khó khăn trong việc debug và bảo trì.

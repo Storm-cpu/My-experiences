@@ -1,6 +1,8 @@
 ### Concept
 Strategy Pattern cho phép định nghĩa một nhóm các thuật toán, đóng gói từng thuật toán thành một đối tượng, và làm cho chúng có thể thay thế cho nhau.
 
+Ví dụ: Trong một ứng dụng thanh toán, mình có thể có nhiều phương thức thanh toán khác nhau như PayPal, Credit Card, Bitcoin, v.v. Mỗi phương thức thanh toán này có thể được triển khai như một strategy riêng biệt và có thể được chọn tùy theo ngữ cảnh sử dụng
+
 ### Structure
 Structure của Strategy pattern bao gồm các thành phần:
 
