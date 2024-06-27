@@ -1,7 +1,20 @@
-package main
+### Concept
+Builder pattern cho phép xây dựng các đối tượng phức tạp theo từng bước.
 
-import "fmt"
+Ví dụ: Để xây dựng một ngôi nhà đơn giản, ta cần xây dựng bốn bức tường, lát nền nhà, lắp cửa sổ, cửa ra vào và lợp mái nhà. Tuy nhiên, nếu muốn xây dựng một ngôi nhà lớn hơn, có sân sau và các tiện ích khác , việc sử dụng lớp con để extend sẽ trở nên phức tạp. Thay vào đó, Builder Pattern cho phép xây dựng ngôi nhà bằng cách sử dụng các bước như xây tường, lắp cửa, lợp mái, mà mình có thể gọi theo nhu cầu để tạo ra một cấu hình cụ thể của ngôi nhà
 
+### Structure
+Structure của Builder pattern bao gồm các thành phần:
+
+![builder_structure](../../access/builder_structure.png)
+
+- Director: Là một lớp hoặc đối tượng chịu trách nhiệm xây dựng đối tượng cuối cùng. Nó sử dụng một đối tượng Builder để thực hiện các bước xây dựng.
+- Builder: Là một giao diện hoặc lớp trừu tượng chứa các phương thức để xây dựng từng phần của đối tượng cuối cùng. Các phương thức này có thể là buildStepA(), buildStepB(), và getResult().
+- ConcreteBuilder1 và ConcreteBuilder2: Là các lớp cụ thể thực hiện giao diện Builder. Chúng xây dựng các phần khác nhau của đối tượng cuối cùng.
+- Product1 và Product2: Là các lớp đại diện cho đối tượng cuối cùng. Chúng chứa các phương thức như buildStepA(), buildStepB(), getProduct1(), hoặc getProduct2().
+
+### Example
+```
 type HouseBuilder interface {
 	setWindowType()
 	setDoorType()
@@ -181,9 +194,9 @@ func (d *Director) buildHouse(buildType string) (House, error) {
 		d.builder.setDoorType()
 		d.builder.setWindowType()
 		d.builder.setRoofType()
-		d.builder.setHaveGarage()
 		d.builder.setHavePool()
 		d.builder.setHaveGarden()
+		d.builder.setHaveGarage()
 		return d.builder.getHouse(), nil
 	}
 	return House{}, fmt.Errorf("invalid option")
@@ -223,3 +236,22 @@ func main() {
 	fmt.Printf("Brick House Have Garage: %t\n", simpleBrickHouse.haveGarage)
 
 }
+```
+
+### Applicability
+Builder pattern thường được áp dụng khi:
+
+- Khi cần tạo ra một đối tượng có nhiều thành phần hoặc thuộc tính phức tạp.
+- Trì hoãn việc thực hiện các bước một số bước builder nhất định
+
+### Pros and Cons
+Ưu điểm của Builder:
+
+- Tách biệt logic xây dựng
+- Tùy chỉnh linh hoạt: có thể tùy chỉnh từng bước xây dựng để tạo ra các biểu diễn khác nhau của đối tượng.
+- Giảm sự phức tạp khi khởi tạo đối tượng
+
+Nhược điểm của Builder:
+
+- Tăng số lượng class do phải tạo thêm các lớp Builder và Product
+- Không phù hợp cho đối tượng đơn giản

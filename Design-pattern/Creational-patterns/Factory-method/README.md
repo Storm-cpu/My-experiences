@@ -1,12 +1,12 @@
 ### Concept
 Factory menthod cho phép định nghĩa một interface để tạo ra một đối tượng, nhưng để các lớp con quyết định lớp nào sẽ được khởi tạo
 
-Ví dụ: Mình có một nhà máy đưa ra một quy trình chung là sản xuất truck, bus và car nhưng mình không cần quan tâm những thứ đó được sản xuất như thế nào mình chỉ tạo ra một cái quy trình chung cho nhà máy và việc nó sản xuất như thế nào thì để thợ xử lý.
+Ví dụ: Mình có một nhà máy đưa ra một quy trình chung là sản xuất phương tiện đi lại và có truck, bus và car implement vào và tuân theo quy trình đó mà sản xuất ra các phương tiện cụ thể
 
 ### Structure
 Structure của Factory-menthod bao gồm các thành phần:
 
-![observer_structure](../../access/factory_structure.png)
+![factory_structure](../../access/factory_structure.png)
 
 - Abstract Creator (Creator):
     - Là một lớp trừu tượng hoặc interface chứa phương thức factoryMethod().

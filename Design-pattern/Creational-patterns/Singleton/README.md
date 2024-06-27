@@ -6,7 +6,7 @@ Ví dụ: Muốn khởi tạo kết nối cơ sở dữ liệu để tránh vi�
 ### Structure
 Structure của Singleton pattern bao gồm các thành phần:
 
-![observer_structure](../../access/singleton_structure.png)
+![singleton_structure](../../access/singleton_structure.png)
 
 - Singleton Class:
     - Private Static Variable: Một biến static được khai báo ở mức độ private để giữ instance duy nhất của lớp Singleton.

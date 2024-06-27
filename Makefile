@@ -12,3 +12,6 @@ run-factory:
 
 run-builder:
 	cd Design-pattern/Creational-patterns/Builder && go run main.go
+
+run-abstract:
+	cd Design-pattern/Creational-patterns/Abstract-factory && go run main.go
