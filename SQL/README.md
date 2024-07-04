@@ -2,6 +2,8 @@
 1. [ SELECT ](#select)
 2. [ WHERE ](#where)
 3. [ ORDER BY ](#order_by)
+4. [ PROCEDURE, FUNCTION, VIEW AND TRIGGER ](#procedure_function_view_trigger)
+5. [ INDEX ](#index)
 
 
 <a name="select"></a>
@@ -79,8 +81,8 @@ OR age = 20
 NOT country = "china";
 ```
 
-<a name="procedure_function_view"></a>
-# Procedure, Function and View
+<a name="procedure_function_view_trigger"></a>
+# Procedure, Function, View and Trigger
 
 ## Procedure
 ### Syntax
@@ -106,4 +108,104 @@ begin
     end if;
 end;
 $$;
+```
+
+## Function
+### Syntax
+```
+create [or replace] function function_name(parameter_list)
+returns return_type
+language plpgsql
+as $$
+declare
+-- variable declaration
+begin
+-- function body
+return return_value;
+end; $$
+```
+
+### Example
+```
+create or replace function getUserAge(input_id int)
+returns int
+language plpgsql
+as $$
+declare
+    user_age int;
+begin
+    select age into user_age from USER where user_id = input_id;
+    if user_age is null then
+        raise exception 'User with id % does not exist', input_id;
+    end if;
+    return user_age;
+end;
+$$;
+```
+
+## View
+### Syntax
+```
+create [or replace] view view_name as
+select_statement;
+```
+
+### Example
+```
+create or replace view user_overview as
+select user_id, username, country from USER;
+```
+
+## Trigger
+### Syntax
+```
+--Create function first
+create [or replace] function trigger_function_name()
+returns trigger
+language plpgsql
+as $$
+begin
+-- trigger body
+return new;
+end; $$
+--Then create trigger
+create trigger trigger_name
+{before|after|instead of} {event}
+on table_name
+for each row
+execute function trigger_function_name();
+```
+
+### Example
+```
+--Create function first
+create or replace function log_user_update()
+returns trigger
+language plpgsql
+as $$
+begin
+    raise notice 'User with id % has been updated. Old username: %, New username: %', OLD.user_id, OLD.username, NEW.username;
+    return new;
+end;
+$$;
+--Then create trigger
+create trigger user_update_logger
+after update on USER
+for each row
+execute function log_user_update();
+```
+
+<a name="index"></a>
+# INDEX
+
+## Syntax
+```
+create index [if not exists] index_name
+on table_name(column1, column2, ...);
+```
+
+## Example
+```
+create index if not exists gender_age_idx
+on card(gender,age);
 ```
