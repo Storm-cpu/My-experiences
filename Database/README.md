@@ -4,6 +4,7 @@
 3. [ ORDER BY ](#order_by)
 4. [ PROCEDURE, FUNCTION, VIEW AND TRIGGER ](#procedure_function_view_trigger)
 5. [ INDEX ](#index)
+5. [ DELETE AND TRUNCATE ](#delete_truncate)
 
 
 <a name="select"></a>
@@ -81,8 +82,8 @@ OR age = 20
 NOT country = "china";
 ```
 
-<a name="procedure_function_view_trigger"></a>
-# Procedure, Function, View and Trigger
+<a name="procedure_function_trigger"></a>
+# Procedure, Function and Trigger
 
 ## Procedure
 ### Syntax
@@ -143,19 +144,6 @@ end;
 $$;
 ```
 
-## View
-### Syntax
-```
-create [or replace] view view_name as
-select_statement;
-```
-
-### Example
-```
-create or replace view user_overview as
-select user_id, username, country from USER;
-```
-
 ## Trigger
 ### Syntax
 ```
@@ -208,4 +196,78 @@ on table_name(column1, column2, ...);
 ```
 create index if not exists gender_age_idx
 on card(gender,age);
+```
+
+<a name="view_materialized_view"></a>
+# View and Materialized View
+
+## View
+- Là table ảo dựa theo câu lệnh select
+- Giúp thao tác nhanh với dữ liệu
+- Nên dùng cho các truy vấn đơn giản và có khả năng tái sử dụng cao
+
+### Syntax
+```
+create [or replace] view view_name as
+select_statement;
+```
+
+### Example
+```
+create or replace view user_overview as
+select user_id, username, country from USER;
+```
+
+## Materialized 
+- Nó giống như view nhưng nó sẽ lưu lại data khi truy vấn
+- Phải cập nhật lại data manualy bằng cách dùng refresh. `refresh materialized view view_name;`
+- Cần thêm không gian lưu trữ bộ nhớ
+- Giúp việc truy vấn data nhanh hơn
+- Nên dùng cho những loại dữ liệu ít được update nhưng được truy cập thường xuyên
+
+### Syntax
+```
+create materialized view view_name as
+select_statement
+```
+
+### Example
+```
+create materialized view user_stats as
+select user_id, count(*) as total_posts
+from posts
+group by user_id;
+```
+
+<a name="delete_truncate"></a>
+# Detele and Truncate
+
+## Delete
+- Xóa các hàng dựa theo điều kiện
+- Có thể rollback nếu trong transaction
+- Chậm hơn khi xóa lượng lớn dữ liệu
+
+### Syntax
+```
+DELETE FROM table_name [WHERE condition];
+```
+
+### Example
+```
+DELETE FROM USER WHERE country = 'China';
+```
+
+## Truncate
+- Xóa tất cả dữ liệu của một bảng
+- Không thể rollback trừ khi trong transaction được hỗ trợ
+- Xóa nhanh một lượng lớn dữ liệu
+
+### Syntax
+```
+TRUNCATE TABLE table_name;
+```
+
+### Example
+```
+TRUNCATE TABLE USER;
 ```

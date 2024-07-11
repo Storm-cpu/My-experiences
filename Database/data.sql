@@ -5,6 +5,7 @@ create table USER (
 	age INT,
 	country VARCHAR(50)
 );
+
 insert into USER (user_id, username, gender, age, country) values (1, 'dshawell0', 'Male', 93, 'China');
 insert into USER (user_id, username, gender, age, country) values (2, 'tmayor1', 'Agender', 58, 'China');
 insert into USER (user_id, username, gender, age, country) values (3, 'wgioan2', 'Female', 64, 'Thailand');

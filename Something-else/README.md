@@ -3,6 +3,7 @@
 2. [ Unit of Work (UoW) ](#uow)
 3. [ Object-relational Mapping (ORM) ](#orm)
 4. [ DTO, DAO and Entity ](#dde)
+5. [ ACID ](#acid)
 
 
 <a name="repository"></a>
@@ -35,3 +36,11 @@
 - DAO tách logic nghiệp vụ ra khỏi các thành phần khác của ứng dụng
 ## Entity
 - Entity là các class tương ứng với các table trong db và có thể map vào db được
+
+<a name="acid"></a>
+# ACID
+1. Atomicity: Toàn bộ các công việc trong transaction sẽ được thực hiện toàn bộ hoặc không thực hiện cái nào
+2. Consistency: Khi một transaction được thực hiện thành công thì csdl vẫn trong trạng thái hợp lệ, vẫn tuân theo các tính chất sẵn có.
+3. Isolation: Các transaction sẽ không ảnh hưởng lẫn nhau khi thực hiện đồng thời
+4. Durability: Khi transaction được commit thì những thay đổi sẽ được lưu và back up lại được khi gặp sự cố
+
