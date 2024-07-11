@@ -61,10 +61,6 @@ func (u *User) Delete(ctx context.Context, id int) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	if err := u.udb.Update(u.db.WithContext(ctx), map[string]interface{}{"status": model.UserStatusDeletedByAdmin}, id); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-
 	if err := u.udb.Delete(u.db.WithContext(ctx), id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
