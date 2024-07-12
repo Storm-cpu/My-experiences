@@ -20,7 +20,6 @@ type Service interface {
 	View(ctx context.Context, userID int) (*model.User, error)
 	List(ctx context.Context, lq *dbutil.ListQueryCondition, count *int64) ([]*model.User, error)
 	Delete(ctx context.Context, userID int) error
-	ChangePassword(ctx context.Context, userID int, data ChangePasswordData) error
 }
 
 func NewHTTP(svc Service, eg *echo.Group) {
@@ -31,16 +30,17 @@ func NewHTTP(svc Service, eg *echo.Group) {
 	eg.GET("", h.list)
 	eg.PATCH("/:id", h.update)
 	eg.DELETE("/:id", h.delete)
-	eg.PATCH("/:id/password", h.changePassword)
 }
 
+// ListResp contains list of users and current page number response
 type ListResp struct {
 	Data       []*model.User `json:"data"`
 	TotalCount int64         `json:"total_count"`
 }
 
+// CreatUserData contains user data from request
 type CreatUserData struct {
-	UserName    string `json:"username" validate:"required,min=3"`
+	Username    string `json:"username" validate:"required,min=3"`
 	Password    string `json:"password" validate:"required,min=8"`
 	FirstName   string `json:"first_name" validate:"required"`
 	LastName    string `json:"last_name" validate:"required"`
@@ -49,17 +49,13 @@ type CreatUserData struct {
 	Blocked     bool   `json:"blocked"`
 }
 
+// UpdateData contains user data from request
 type UpdateUserData struct {
 	FirstName   *string `json:"first_name,omitempty"`
 	LastName    *string `json:"last_name,omitempty"`
 	Email       *string `json:"email,omitempty"`
 	PhoneNumber *string `json:"phone_number,omitempty"`
 	Blocked     *bool   `json:"blocked,omitempty"`
-}
-
-type ChangePasswordData struct {
-	NewPassword        string `json:"new_password" validate:"required,min=8"`
-	NewPasswordConfirm string `json:"new_password_confirm" validate:"required,eqfield=NewPassword"`
 }
 
 func (h *HTTP) create(c echo.Context) error {
@@ -129,28 +125,6 @@ func (h *HTTP) delete(c echo.Context) error {
 		return err
 	}
 	if err := h.svc.Delete(c.Request().Context(), id); err != nil {
-		return err
-	}
-
-	return c.NoContent(http.StatusOK)
-}
-
-func (h *HTTP) changePassword(c echo.Context) error {
-	id, err := httputil.ReqID(c)
-	if err != nil {
-		return err
-	}
-
-	r := ChangePasswordData{}
-	if err := c.Bind(&r); err != nil {
-		return err
-	}
-
-	if err = c.Validate(r); err != nil {
-		return err
-	}
-
-	if err := h.svc.ChangePassword(c.Request().Context(), id, r); err != nil {
 		return err
 	}
 

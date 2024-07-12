@@ -12,8 +12,13 @@ import (
 
 func (u *User) Create(ctx context.Context, data CreatUserData) (*model.User, error) {
 	rec := &model.User{
-		FirstName: data.FirstName,
-		LastName:  data.LastName,
+		Username:    data.Username,
+		Password:    data.Password,
+		FirstName:   data.FirstName,
+		LastName:    data.LastName,
+		Email:       data.Email,
+		PhoneNumber: data.PhoneNumber,
+		Blocked:     data.Blocked,
 	}
 
 	if err := u.udb.Create(u.db.WithContext(ctx), rec); err != nil {
@@ -60,15 +65,6 @@ func (u *User) Delete(ctx context.Context, id int) error {
 	}
 
 	if err := u.udb.Delete(u.db.WithContext(ctx), id); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-
-	return nil
-}
-
-func (u *User) ChangePassword(ctx context.Context, userID int, data ChangePasswordData) error {
-
-	if err := u.udb.Update(u.db.WithContext(ctx), map[string]interface{}{"password": data.NewPassword}, userID); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
