@@ -7,12 +7,6 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// custom variable
-var (
-	DocumentExts = []string{".pdf", ".jpg", ".jpeg", ".png"}
-	ImageExts    = []string{".jpg", ".jpeg", ".png"}
-)
-
 // CustomValidator holds custom validator
 type CustomValidator struct {
 	V *validator.Validate
