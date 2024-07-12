@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 	"social_blog/internal/model"
-	dbutil "social_blog/internal/util/db"
-	structutil "social_blog/internal/util/struct"
+	dbutil "social_blog/pkg/util/db"
+	structutil "social_blog/pkg/util/struct"
 
 	"github.com/labstack/echo/v4"
 )

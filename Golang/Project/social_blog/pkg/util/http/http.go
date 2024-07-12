@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"regexp"
-	dbutil "social_blog/internal/util/db"
+	dbutil "social_blog/pkg/util/db"
 	"strconv"
 	"strings"
 

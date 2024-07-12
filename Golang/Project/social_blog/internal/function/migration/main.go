@@ -3,7 +3,7 @@ package migration
 import (
 	"social_blog/config"
 	"social_blog/internal/model"
-	dbutil "social_blog/internal/util/db"
+	dbutil "social_blog/pkg/util/db"
 )
 
 func Run() {

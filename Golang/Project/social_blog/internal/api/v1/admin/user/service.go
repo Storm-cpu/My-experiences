@@ -1,7 +1,7 @@
 package user
 
 import (
-	dbutil "social_blog/internal/util/db"
+	dbutil "social_blog/pkg/util/db"
 
 	"gorm.io/gorm"
 )

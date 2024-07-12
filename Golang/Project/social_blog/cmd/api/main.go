@@ -4,7 +4,7 @@ import (
 	"social_blog/config"
 	adminUser "social_blog/internal/api/v1/admin/user"
 	userDB "social_blog/internal/db/user"
-	dbutil "social_blog/internal/util/db"
+	dbutil "social_blog/pkg/util/db"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
