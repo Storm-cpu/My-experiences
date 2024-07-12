@@ -42,6 +42,7 @@ func New(cfg *Config) *echo.Echo {
 
 	e.Server.Addr = fmt.Sprintf(":%d", cfg.Port)
 	e.Validator = NewValidator()
+	e.Binder = NewBinder()
 	e.HTTPErrorHandler = NewErrorHandler(e).Handle
 	e.Server.ReadTimeout = time.Duration(cfg.ReadTimeout) * time.Minute
 	e.Server.WriteTimeout = time.Duration(cfg.WriteTimeout) * time.Minute
