@@ -4,10 +4,8 @@ import (
 	"social_blog/config"
 	adminUser "social_blog/internal/api/v1/admin/user"
 	userDB "social_blog/internal/db/user"
+	"social_blog/pkg/server"
 	dbutil "social_blog/pkg/util/db"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -17,11 +15,13 @@ func main() {
 
 	udb := userDB.NewDB(&cfg)
 
+	e := server.New(&server.Config{
+		Port:         cfg.Port,
+		ReadTimeout:  cfg.ReadTimeout,
+		WriteTimeout: cfg.WriteTimeout,
+	})
+
 	adminUserSvc := adminUser.New(db, udb)
-
-	e := echo.New()
-
-	e.Use(middleware.Logger())
 
 	v1aRouter := e.Group("/v1")
 	v1aRouter = v1aRouter.Group("/admin")
