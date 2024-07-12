@@ -144,6 +144,10 @@ func (h *HTTP) changePassword(c echo.Context) error {
 		return err
 	}
 
+	if err = c.Validate(r); err != nil {
+		return err
+	}
+
 	if err := h.svc.ChangePassword(c.Request().Context(), id, r); err != nil {
 		return err
 	}
