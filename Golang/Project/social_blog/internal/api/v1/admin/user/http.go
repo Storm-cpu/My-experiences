@@ -50,9 +50,11 @@ type CreatUserData struct {
 }
 
 type UpdateUserData struct {
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name"`
-	PhoneNumber string `json:"phone_number"`
+	FirstName   *string `json:"first_name,omitempty"`
+	LastName    *string `json:"last_name,omitempty"`
+	Email       *string `json:"email,omitempty"`
+	PhoneNumber *string `json:"phone_number,omitempty"`
+	Blocked     *bool   `json:"blocked,omitempty"`
 }
 
 type ChangePasswordData struct {
