@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"social_blog/internal/model"
 	dbutil "social_blog/internal/util/db"
+	structutil "social_blog/internal/util/struct"
 
 	"github.com/labstack/echo/v4"
 )
@@ -39,15 +40,13 @@ func (u *User) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *i
 }
 
 func (u *User) Update(ctx context.Context, data UpdateUserData, userID int) (*model.User, error) {
-	rec := &model.User{
-		FirstName: data.FirstName,
-		LastName:  data.LastName,
-	}
 
-	if err := u.udb.Update(u.db.WithContext(ctx), rec, userID); err != nil {
+	update := structutil.ToMap(data)
+	if err := u.udb.Update(u.db.WithContext(ctx), update, userID); err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
+	rec := new(model.User)
 	if err := u.udb.View(u.db.WithContext(ctx), rec, userID); err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
@@ -56,12 +55,20 @@ func (u *User) Update(ctx context.Context, data UpdateUserData, userID int) (*mo
 }
 
 func (u *User) Delete(ctx context.Context, id int) error {
-
 	if existed, err := u.udb.Exist(u.db.WithContext(ctx), id); err != nil || !existed {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	if err := u.udb.Delete(u.db.WithContext(ctx), id); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return nil
+}
+
+func (u *User) ChangePassword(ctx context.Context, userID int, data ChangePasswordData) error {
+
+	if err := u.udb.Update(u.db.WithContext(ctx), map[string]interface{}{"password": data.NewPassword}, userID); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 

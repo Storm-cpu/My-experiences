@@ -12,5 +12,4 @@ func Run() {
 	db := dbutil.ConnectDB(cfg)
 
 	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Blog{})
 }
