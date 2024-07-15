@@ -1,11 +1,14 @@
 package server
 
 import (
+	"context"
 	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type Config struct {
@@ -38,7 +41,7 @@ func New(cfg *Config) *echo.Echo {
 	cfg.fillDefaults()
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	//e.Use(middleware.Logger())
 
 	e.Server.Addr = fmt.Sprintf(":%d", cfg.Port)
 	e.Validator = NewValidator()
@@ -48,4 +51,29 @@ func New(cfg *Config) *echo.Echo {
 	e.Server.WriteTimeout = time.Duration(cfg.WriteTimeout) * time.Minute
 
 	return e
+}
+
+// Start starts echo server
+func Start(e *echo.Echo) {
+	// Start server
+	go func() {
+		if err := e.StartServer(e.Server); err != nil {
+			if err == http.ErrServerClosed {
+				e.Logger.Info("shutting down the server")
+			} else {
+				e.Logger.Errorf("error shutting down the server: ", err)
+			}
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 10 seconds.
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		e.Logger.Fatal(err)
+	}
 }
