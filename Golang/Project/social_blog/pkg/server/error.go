@@ -23,9 +23,10 @@ type ErrorResponse struct {
 
 // HTTPError represents an error that occurred while handling a request
 type HTTPError struct {
-	Code    int    `json:"code"`
-	Type    string `json:"type"`
-	Message string `json:"message"`
+	Code     int    `json:"code"`
+	Type     string `json:"type"`
+	Message  string `json:"message"`
+	Internal error  `json:"-"`
 }
 
 // NewHTTPError creates a new HTTPError instance
@@ -74,6 +75,12 @@ func (he *HTTPError) SetType(errType string) *HTTPError {
 	return he
 }
 
+// SetInternal sets actual internal error for more details
+func (he *HTTPError) SetInternal(err error) *HTTPError {
+	he.Internal = err
+	return he
+}
+
 // ErrorHandler represents the custom http error handler
 type ErrorHandler struct {
 	e *echo.Echo
@@ -99,6 +106,9 @@ func (ce *ErrorHandler) Handle(err error, c echo.Context) {
 		}
 		if e.Message != "" {
 			httpErr.Message = e.Message
+		}
+		if e.Internal != nil && !c.Response().Committed {
+			c.Logger().Errorf("internal err: %+v", e.Internal)
 		}
 
 	case *echo.HTTPError:
@@ -139,7 +149,7 @@ func (ce *ErrorHandler) Handle(err error, c echo.Context) {
 			err = c.JSON(httpErr.Code, ErrorResponse{Error: httpErr})
 		}
 		if err != nil {
-			fmt.Printf("error sending response: %v", err)
+			c.Logger().Errorf("error sending response: %+v", err)
 		}
 	}
 }
