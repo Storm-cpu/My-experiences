@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// Create creates a new User
 func (u *User) Create(ctx context.Context, data CreatUserData) (*model.User, error) {
 	rec := &model.User{
 		Username:    data.Username,
@@ -28,6 +29,7 @@ func (u *User) Create(ctx context.Context, data CreatUserData) (*model.User, err
 	return rec, nil
 }
 
+// View returns a single User
 func (u *User) View(ctx context.Context, id int) (*model.User, error) {
 	rec := new(model.User)
 	if err := u.udb.View(u.db.WithContext(ctx), rec, id); err != nil {
@@ -36,6 +38,7 @@ func (u *User) View(ctx context.Context, id int) (*model.User, error) {
 	return rec, nil
 }
 
+// List returns a list of Users
 func (u *User) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *int64) ([]*model.User, error) {
 	var data []*model.User
 	if err := u.udb.List(u.db.WithContext(ctx), &data, lq, count); err != nil {
@@ -44,8 +47,8 @@ func (u *User) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *i
 	return data, nil
 }
 
+// Update updates User information
 func (u *User) Update(ctx context.Context, data UpdateUserData, userID int) (*model.User, error) {
-
 	update := structutil.ToMap(data)
 	if err := u.udb.Update(u.db.WithContext(ctx), update, userID); err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -59,6 +62,7 @@ func (u *User) Update(ctx context.Context, data UpdateUserData, userID int) (*mo
 	return rec, nil
 }
 
+// Delete deletes a User
 func (u *User) Delete(ctx context.Context, id int) error {
 	if existed, err := u.udb.Exist(u.db.WithContext(ctx), id); err != nil || !existed {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)

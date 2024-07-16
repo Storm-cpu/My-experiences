@@ -49,7 +49,7 @@ type CreatUserData struct {
 	Blocked     bool   `json:"blocked"`
 }
 
-// UpdateData contains user data from request
+// UpdateUserData contains user data from request
 type UpdateUserData struct {
 	FirstName   *string `json:"first_name,omitempty"`
 	LastName    *string `json:"last_name,omitempty"`
