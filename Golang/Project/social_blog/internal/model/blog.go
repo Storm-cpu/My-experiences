@@ -17,7 +17,7 @@ const (
 )
 
 const (
-	UserStatusPending  = "PENDING"
-	UserStatusApproved = "APPROVED"
-	UserStatusRejected = "REJECTED"
+	BlogStatusPending  = "PENDING"
+	BlogStatusApproved = "APPROVED"
+	BlogStatusRejected = "REJECTED"
 )
