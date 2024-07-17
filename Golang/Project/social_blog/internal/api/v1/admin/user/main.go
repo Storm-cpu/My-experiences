@@ -17,7 +17,7 @@ var (
 func (u *User) Create(ctx context.Context, data CreatUserData) (*model.User, error) {
 	rec := &model.User{
 		Username:    data.Username,
-		Password:    data.Password,
+		Password:    u.cr.HashPassword(data.Password),
 		FirstName:   data.FirstName,
 		LastName:    data.LastName,
 		Email:       data.Email,

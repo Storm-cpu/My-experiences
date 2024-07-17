@@ -9,7 +9,7 @@ type User struct {
 	PhoneNumber string     `json:"phone_number,omitempty" gorm:"type:varchar(20)"`
 	Email       string     `json:"email" gorm:"type:varchar(255)"`
 	LastLogin   *time.Time `json:"last_login,omitempty"`
-	Username    string     `json:"username" gorm:"type:varchar(255);unique_index;not null"`
+	Username    string     `json:"username" gorm:"type:varchar(255);unique;index;not null"`
 	Password    string     `json:"-" gorm:"type:varchar(255);not null"`
 	Blocked     bool       `json:"blocked" gorm:"not null;default:0"`
 	Base

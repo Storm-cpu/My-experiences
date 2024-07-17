@@ -13,6 +13,7 @@ import (
 	userDB "social_blog/internal/db/user"
 
 	"social_blog/pkg/server"
+	"social_blog/pkg/util/crypter"
 	dbutil "social_blog/pkg/util/db"
 )
 
@@ -31,8 +32,9 @@ func main() {
 	bdb := blogDB.NewDB(&cfg)
 	cdb := commentDB.NewDB(&cfg)
 
-	authSvc := auth.New(db, udb)
-	adminUserSvc := adminUser.New(db, udb)
+	crypterSvc := crypter.New()
+	authSvc := auth.New(db, udb, crypterSvc)
+	adminUserSvc := adminUser.New(db, udb, crypterSvc)
 	adminBlogSvc := adminBlog.New(db, bdb)
 	adminCommentSvc := adminComment.New(db, cdb)
 

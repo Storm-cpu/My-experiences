@@ -22,7 +22,7 @@ type Configuration struct {
 func LoadConfig() Configuration {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		log.Fatalf("Error loading .env file %+v", err)
 	}
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))

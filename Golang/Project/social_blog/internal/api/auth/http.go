@@ -23,8 +23,8 @@ func NewHTTP(svc Service, e *echo.Echo) {
 
 // Credentials contains login request data
 type Credentials struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Username string `json:"username" validate:"required,min=3"`
+	Password string `json:"password" validate:"required,min=8"`
 }
 
 type RepMessage struct {

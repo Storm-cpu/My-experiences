@@ -11,7 +11,7 @@ func (s *Auth) Authenticate(ctx context.Context, data Credentials) (*RepMessage,
 	if err != nil || user == nil {
 		return nil, server.NewHTTPError(http.StatusUnauthorized, "INVALID_CREDENTIALS", "Username or password is incorrect")
 	}
-	if user.Password != data.Password {
+	if !s.cr.CompareHashAndPassword(user.Password, data.Password) {
 		return nil, server.NewHTTPError(http.StatusUnauthorized, "INVALID_CREDENTIALS", "Username or password is incorrect")
 	}
 	if user.Blocked {
