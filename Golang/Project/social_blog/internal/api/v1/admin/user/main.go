@@ -4,10 +4,13 @@ import (
 	"context"
 	"net/http"
 	"social_blog/internal/model"
+	"social_blog/pkg/server"
 	dbutil "social_blog/pkg/util/db"
 	structutil "social_blog/pkg/util/struct"
+)
 
-	"github.com/labstack/echo/v4"
+var (
+	ErrUserNotFound = server.NewHTTPError(http.StatusBadRequest, "USER_NOTFOUND", "User không tồn tại")
 )
 
 // Create creates a new User
@@ -23,7 +26,7 @@ func (u *User) Create(ctx context.Context, data CreatUserData) (*model.User, err
 	}
 
 	if err := u.udb.Create(u.db.WithContext(ctx), rec); err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+		return nil, server.NewHTTPInternalError("Error creating user").SetInternal(err)
 	}
 
 	return rec, nil
@@ -33,7 +36,7 @@ func (u *User) Create(ctx context.Context, data CreatUserData) (*model.User, err
 func (u *User) View(ctx context.Context, id int) (*model.User, error) {
 	rec := new(model.User)
 	if err := u.udb.View(u.db.WithContext(ctx), rec, id); err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+		return nil, ErrUserNotFound.SetInternal(err)
 	}
 	return rec, nil
 }
@@ -42,7 +45,7 @@ func (u *User) View(ctx context.Context, id int) (*model.User, error) {
 func (u *User) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *int64) ([]*model.User, error) {
 	var data []*model.User
 	if err := u.udb.List(u.db.WithContext(ctx), &data, lq, count); err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+		return nil, server.NewHTTPInternalError("Error listing user").SetInternal(err)
 	}
 	return data, nil
 }
@@ -51,12 +54,12 @@ func (u *User) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *i
 func (u *User) Update(ctx context.Context, data UpdateUserData, userID int) (*model.User, error) {
 	update := structutil.ToMap(data)
 	if err := u.udb.Update(u.db.WithContext(ctx), update, userID); err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+		return nil, server.NewHTTPInternalError("Error updating user")
 	}
 
 	rec := new(model.User)
 	if err := u.udb.View(u.db.WithContext(ctx), rec, userID); err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+		return nil, ErrUserNotFound.SetInternal(err)
 	}
 
 	return rec, nil
@@ -65,11 +68,11 @@ func (u *User) Update(ctx context.Context, data UpdateUserData, userID int) (*mo
 // Delete deletes a User
 func (u *User) Delete(ctx context.Context, id int) error {
 	if existed, err := u.udb.Exist(u.db.WithContext(ctx), id); err != nil || !existed {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+		return ErrUserNotFound.SetInternal(err)
 	}
 
 	if err := u.udb.Delete(u.db.WithContext(ctx), id); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+		return server.NewHTTPInternalError("Error deleting user").SetInternal(err)
 	}
 
 	return nil
