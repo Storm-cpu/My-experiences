@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Config struct {
@@ -41,7 +42,7 @@ func New(cfg *Config) *echo.Echo {
 	cfg.fillDefaults()
 	e := echo.New()
 
-	//e.Use(middleware.Logger())
+	e.Use(middleware.Logger())
 
 	e.Server.Addr = fmt.Sprintf(":%d", cfg.Port)
 	e.Validator = NewValidator()

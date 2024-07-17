@@ -43,7 +43,7 @@ func (b *Blog) View(ctx context.Context, id int) (*model.Blog, error) {
 func (b *Blog) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *int64) ([]*model.Blog, error) {
 	var data []*model.Blog
 	if err := b.bdb.List(b.db.WithContext(ctx), &data, lq, count); err != nil {
-		return nil, server.NewHTTPInternalError("Error listing Blog").SetInternal(err)
+		return nil, server.NewHTTPInternalError("Error listing blog").SetInternal(err)
 	}
 	return data, nil
 }
@@ -52,7 +52,7 @@ func (b *Blog) List(ctx context.Context, lq *dbutil.ListQueryCondition, count *i
 func (b *Blog) Update(ctx context.Context, data UpdateBlogData, blogID int) (*model.Blog, error) {
 	update := structutil.ToMap(data)
 	if err := b.bdb.Update(b.db.WithContext(ctx), update, blogID); err != nil {
-		return nil, server.NewHTTPInternalError("Error updating Blog").SetInternal(err)
+		return nil, server.NewHTTPInternalError("Error updating blog").SetInternal(err)
 	}
 
 	rec := new(model.Blog)
@@ -70,7 +70,7 @@ func (b *Blog) Delete(ctx context.Context, id int) error {
 	}
 
 	if err := b.bdb.Delete(b.db.WithContext(ctx), id); err != nil {
-		return server.NewHTTPInternalError("Error deleting Blog").SetInternal(err)
+		return server.NewHTTPInternalError("Error deleting blog").SetInternal(err)
 	}
 
 	return nil

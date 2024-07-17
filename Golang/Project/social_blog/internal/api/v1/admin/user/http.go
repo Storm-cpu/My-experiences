@@ -25,10 +25,19 @@ type Service interface {
 func NewHTTP(svc Service, eg *echo.Group) {
 	h := HTTP{svc}
 
+	// POST /v1/admin/users
 	eg.POST("", h.create)
+
+	// GET /v1/admin/users/{id}
 	eg.GET("/:id", h.view)
+
+	// GET /v1/admin/users
 	eg.GET("", h.list)
+
+	// PATCH /v1/admin/users/{id}
 	eg.PATCH("/:id", h.update)
+
+	// DELETE /v1/admin/users/{id}
 	eg.DELETE("/:id", h.delete)
 }
 

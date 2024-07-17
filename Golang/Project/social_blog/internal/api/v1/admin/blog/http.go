@@ -51,7 +51,7 @@ type ListResp struct {
 type CreateBlogData struct {
 	Title      string `json:"title" validate:"required"`
 	Content    string `json:"content" validate:"required"`
-	AuthorID   int    `json:"author_id" gorm:"not null" validate:"required"`
+	AuthorID   int    `json:"author_id" gorm:"not null" validate:"required,min=1"`
 	Status     string `json:"status" validate:"max=50"`
 	Visibility string `json:"visibility"  validate:"max=50"`
 }

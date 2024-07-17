@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// NewDB returns a new card database instance
+// NewDB returns a new user database instance
 func NewDB(cfg *config.Configuration) *DB {
 	return &DB{dbutil.NewDB(&model.User{}), cfg}
 }
