@@ -3,6 +3,7 @@ package main
 import (
 	"social_blog/config"
 
+	"social_blog/internal/api/auth"
 	adminBlog "social_blog/internal/api/v1/admin/blog"
 	adminComment "social_blog/internal/api/v1/admin/comment"
 	adminUser "social_blog/internal/api/v1/admin/user"
@@ -30,10 +31,12 @@ func main() {
 	bdb := blogDB.NewDB(&cfg)
 	cdb := commentDB.NewDB(&cfg)
 
+	authSvc := auth.New(db, udb)
 	adminUserSvc := adminUser.New(db, udb)
 	adminBlogSvc := adminBlog.New(db, bdb)
 	adminCommentSvc := adminComment.New(db, cdb)
 
+	auth.NewHTTP(authSvc, e)
 	v1aRouter := e.Group("/v1")
 	v1aRouter = v1aRouter.Group("/admin")
 	adminUser.NewHTTP(adminUserSvc, v1aRouter.Group("/users"))

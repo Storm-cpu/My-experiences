@@ -20,7 +20,7 @@ type DB struct {
 
 func (d *DB) FindUserByUsername(db *gorm.DB, username string) (*model.User, error) {
 	rec := new(model.User)
-	if err := d.View(db, rec, "user_name = ?", username); err != nil {
+	if err := d.View(db, rec, "username = ?", username); err != nil {
 		return nil, err
 	}
 	return rec, nil
