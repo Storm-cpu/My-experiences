@@ -9,17 +9,19 @@ import (
 )
 
 type Configuration struct {
-	PostgresHost      string
-	PostgresUser      string
-	PostgresDB        string
-	PostgresSSLMode   string
-	PostgresPassword  string
-	Port              int
-	ReadTimeout       int
-	WriteTimeout      int
-	JwtAdminSecret    string
-	JwtAdminDuration  int
-	JwtAdminAlgorithm string
+	PostgresHost     string
+	PostgresUser     string
+	PostgresDB       string
+	PostgresSSLMode  string
+	PostgresPassword string
+
+	Port         int
+	ReadTimeout  int
+	WriteTimeout int
+
+	JwtSecret    string
+	JwtDuration  int
+	JwtAlgorithm string
 }
 
 func LoadConfig() Configuration {
@@ -53,9 +55,9 @@ func LoadConfig() Configuration {
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 
-		JwtAdminSecret:    jwtSecret,
-		JwtAdminDuration:  jwtDuration,
-		JwtAdminAlgorithm: jwtAlgorithm,
+		JwtSecret:    jwtSecret,
+		JwtDuration:  jwtDuration,
+		JwtAlgorithm: jwtAlgorithm,
 	}
 
 	return config
