@@ -42,3 +42,11 @@ func (s *Auth) loginUser(u *model.User) (*model.AuthToken, error) {
 
 	return &model.AuthToken{AccessToken: token, TokenType: "bearer", ExpiresIn: expiresin, RefreshToken: refreshToken}, nil
 }
+
+func (s *Auth) RefreshToken(ctx context.Context, data RefreshTokenData) (*model.AuthToken, error) {
+	usr, err := s.udb.FindByRefreshToken(s.db.WithContext(ctx), data.RefreshToken)
+	if err != nil || usr == nil {
+		return nil, server.NewHTTPError(http.StatusUnauthorized, "INVALID_REFRESH_TOKEN", "Invalid refresh token")
+	}
+	return s.loginUser(usr)
+}

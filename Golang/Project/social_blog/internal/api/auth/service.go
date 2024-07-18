@@ -27,6 +27,7 @@ type Auth struct {
 type UserDB interface {
 	dbutil.Intf
 	FindUserByUsername(db *gorm.DB, username string) (*model.User, error)
+	FindByRefreshToken(db *gorm.DB, token string) (*model.User, error)
 }
 
 type Crypter interface {

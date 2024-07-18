@@ -25,3 +25,11 @@ func (d *DB) FindUserByUsername(db *gorm.DB, username string) (*model.User, erro
 	}
 	return rec, nil
 }
+
+func (d *DB) FindByRefreshToken(db *gorm.DB, token string) (*model.User, error) {
+	rec := new(model.User)
+	if err := d.View(db, rec, "refresh_token = ?", token); err != nil {
+		return nil, err
+	}
+	return rec, nil
+}

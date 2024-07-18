@@ -14,12 +14,17 @@ type HTTP struct {
 
 type Service interface {
 	Authenticate(ctx context.Context, data Credentials) (*model.AuthToken, error)
+	RefreshToken(ctx context.Context, data RefreshTokenData) (*model.AuthToken, error)
 }
 
 func NewHTTP(svc Service, e *echo.Echo) {
 	h := HTTP{svc}
 
+	// POST /login
 	e.POST("/login", h.login)
+
+	// POST /refresh-token
+	e.POST("/refresh-token", h.refreshToken)
 }
 
 // Credentials contains login request data
@@ -28,8 +33,8 @@ type Credentials struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-type RepMessage struct {
-	Message string `json:"message"`
+type RefreshTokenData struct {
+	RefreshToken string `json:"refresh_token" validate:"required"`
 }
 
 func (h *HTTP) login(c echo.Context) error {
@@ -38,6 +43,19 @@ func (h *HTTP) login(c echo.Context) error {
 		return err
 	}
 	resp, err := h.svc.Authenticate(c.Request().Context(), r)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+func (h *HTTP) refreshToken(c echo.Context) error {
+	r := RefreshTokenData{}
+	if err := c.Bind(&r); err != nil {
+		return err
+	}
+	resp, err := h.svc.RefreshToken(c.Request().Context(), r)
 	if err != nil {
 		return err
 	}
