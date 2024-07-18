@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"net/http"
+	"social_blog/internal/model"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,7 +13,7 @@ type HTTP struct {
 }
 
 type Service interface {
-	Authenticate(ctx context.Context, data Credentials) (*RepMessage, error)
+	Authenticate(ctx context.Context, data Credentials) (*model.AuthToken, error)
 }
 
 func NewHTTP(svc Service, e *echo.Echo) {

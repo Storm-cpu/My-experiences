@@ -21,7 +21,7 @@ func ConnectDB(cfg config.Configuration) *gorm.DB {
 	defer lock.Unlock()
 
 	if instance {
-		fmt.Println("Instance already created")
+		fmt.Println("Database already connected!")
 		return db
 	}
 
@@ -34,7 +34,7 @@ func ConnectDB(cfg config.Configuration) *gorm.DB {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 
-	fmt.Println("Instance created")
+	fmt.Println("Connected to Database!")
 	instance = true
 
 	return db

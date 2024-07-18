@@ -13,6 +13,7 @@ import (
 	userDB "social_blog/internal/db/user"
 
 	"social_blog/pkg/server"
+	"social_blog/pkg/server/middlewares/jwt"
 	"social_blog/pkg/util/crypter"
 	dbutil "social_blog/pkg/util/db"
 )
@@ -33,7 +34,9 @@ func main() {
 	cdb := commentDB.NewDB(&cfg)
 
 	crypterSvc := crypter.New()
-	authSvc := auth.New(db, udb, crypterSvc)
+	jwtAdminSvc := jwt.New(cfg.JwtAdminAlgorithm, cfg.JwtAdminSecret, cfg.JwtAdminDuration)
+
+	authSvc := auth.New(db, udb, crypterSvc, jwtAdminSvc)
 	adminUserSvc := adminUser.New(db, udb, crypterSvc)
 	adminBlogSvc := adminBlog.New(db, bdb)
 	adminCommentSvc := adminComment.New(db, cdb)
