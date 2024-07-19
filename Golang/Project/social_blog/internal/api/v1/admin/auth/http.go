@@ -17,14 +17,14 @@ type Service interface {
 	RefreshToken(ctx context.Context, data RefreshTokenData) (*model.AuthToken, error)
 }
 
-func NewHTTP(svc Service, e *echo.Echo) {
+func NewHTTP(svc Service, eg *echo.Group) {
 	h := HTTP{svc}
 
-	// POST /login
-	e.POST("/login", h.login)
+	// POST v1/admin/login
+	eg.POST("/login", h.login)
 
-	// POST /refresh-token
-	e.POST("/refresh-token", h.refreshToken)
+	// POST v1/admin/refresh-token
+	eg.POST("/refresh-token", h.refreshToken)
 }
 
 // Credentials contains login request data

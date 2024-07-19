@@ -3,7 +3,7 @@ package main
 import (
 	"social_blog/config"
 
-	"social_blog/internal/api/auth"
+	adminAuth "social_blog/internal/api/v1/admin/auth"
 	adminBlog "social_blog/internal/api/v1/admin/blog"
 	adminComment "social_blog/internal/api/v1/admin/comment"
 	adminUser "social_blog/internal/api/v1/admin/user"
@@ -36,14 +36,14 @@ func main() {
 	crypterSvc := crypter.New()
 	jwtSvc := jwt.New(cfg.JwtAlgorithm, cfg.JwtSecret, cfg.JwtDuration)
 
-	authSvc := auth.New(db, udb, crypterSvc, jwtSvc, &cfg)
+	authAdminSvc := adminAuth.New(db, udb, crypterSvc, jwtSvc, &cfg)
 	adminUserSvc := adminUser.New(db, udb, crypterSvc)
 	adminBlogSvc := adminBlog.New(db, bdb)
 	adminCommentSvc := adminComment.New(db, cdb)
 
-	auth.NewHTTP(authSvc, e)
 	v1aRouter := e.Group("/v1")
 	v1aRouter = v1aRouter.Group("/admin")
+	adminAuth.NewHTTP(authAdminSvc, v1aRouter)
 	adminUser.NewHTTP(adminUserSvc, v1aRouter.Group("/users"))
 	adminBlog.NewHTTP(adminBlogSvc, v1aRouter.Group("/blogs"))
 	adminComment.NewHTTP(adminCommentSvc, v1aRouter.Group("/comments"))
