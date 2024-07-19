@@ -34,9 +34,9 @@ func main() {
 	cdb := commentDB.NewDB(&cfg)
 
 	crypterSvc := crypter.New()
-	jwtAdminSvc := jwt.New(cfg.JwtAlgorithm, cfg.JwtSecret, cfg.JwtDuration)
+	jwtSvc := jwt.New(cfg.JwtAlgorithm, cfg.JwtSecret, cfg.JwtDuration)
 
-	authSvc := auth.New(db, udb, crypterSvc, jwtAdminSvc)
+	authSvc := auth.New(db, udb, crypterSvc, jwtSvc, &cfg)
 	adminUserSvc := adminUser.New(db, udb, crypterSvc)
 	adminBlogSvc := adminBlog.New(db, bdb)
 	adminCommentSvc := adminComment.New(db, cdb)

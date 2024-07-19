@@ -8,13 +8,19 @@ import (
 	"time"
 )
 
+var (
+	ErrInvalidCredentials  = server.NewHTTPError(http.StatusUnauthorized, "INVALID_CREDENTIALS", "Username or password is incorrect")
+	ErrInvalidRefreshToken = server.NewHTTPError(http.StatusUnauthorized, "INVALID_REFRESH_TOKEN", "Invalid refresh token")
+	ErrGenerateToken       = server.NewHTTPInternalError("Error generating token")
+)
+
 func (s *Auth) Authenticate(ctx context.Context, data Credentials) (*model.AuthToken, error) {
 	user, err := s.udb.FindUserByUsername(s.db.WithContext(ctx), data.Username)
 	if err != nil || user == nil {
-		return nil, server.NewHTTPError(http.StatusUnauthorized, "INVALID_CREDENTIALS", "Username or password is incorrect")
+		return nil, ErrInvalidCredentials.SetInternal(err)
 	}
 	if !s.cr.CompareHashAndPassword(user.Password, data.Password) {
-		return nil, server.NewHTTPError(http.StatusUnauthorized, "INVALID_CREDENTIALS", "Username or password is incorrect")
+		return nil, ErrInvalidCredentials
 	}
 	if user.Blocked {
 		return nil, server.NewHTTPError(http.StatusUnauthorized, "USER_BLOCKED", "Your account has been blocked and may not login")
@@ -31,10 +37,14 @@ func (s *Auth) loginUser(u *model.User) (*model.AuthToken, error) {
 	}
 	token, expiresin, err := s.jwt.GenerateToken(claims, nil)
 	if err != nil {
-		return nil, server.NewHTTPInternalError("Error generating token").SetInternal(err)
+		return nil, ErrGenerateToken.SetInternal(err)
 	}
 
-	refreshToken := s.cr.UID()
+	refreshToken, err := s.cr.GenRefreshToken(s.cfg.JwtSecret)
+	if err != nil {
+		return nil, ErrGenerateToken.SetInternal(err)
+	}
+
 	err = s.udb.Update(s.db, map[string]interface{}{"refresh_token": refreshToken, "last_login": time.Now()}, u.ID)
 	if err != nil {
 		return nil, server.NewHTTPInternalError("Error updating user").SetInternal(err)
@@ -46,7 +56,10 @@ func (s *Auth) loginUser(u *model.User) (*model.AuthToken, error) {
 func (s *Auth) RefreshToken(ctx context.Context, data RefreshTokenData) (*model.AuthToken, error) {
 	usr, err := s.udb.FindByRefreshToken(s.db.WithContext(ctx), data.RefreshToken)
 	if err != nil || usr == nil {
-		return nil, server.NewHTTPError(http.StatusUnauthorized, "INVALID_REFRESH_TOKEN", "Invalid refresh token")
+		return nil, ErrInvalidRefreshToken.SetInternal(err)
+	}
+	if !s.cr.ValidateRefreshToken(usr.RefreshToken, s.cfg.JwtSecret) {
+		return nil, ErrInvalidRefreshToken
 	}
 	return s.loginUser(usr)
 }

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"social_blog/config"
 	"social_blog/internal/model"
 	dbutil "social_blog/pkg/util/db"
 	"time"
@@ -8,12 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func New(db *gorm.DB, udb UserDB, cr Crypter, jwt JWT) *Auth {
+func New(db *gorm.DB, udb UserDB, cr Crypter, jwt JWT, cfg *config.Configuration) *Auth {
 	return &Auth{
 		db:  db,
 		udb: udb,
 		cr:  cr,
 		jwt: jwt,
+		cfg: cfg,
 	}
 }
 
@@ -22,6 +24,7 @@ type Auth struct {
 	udb UserDB
 	cr  Crypter
 	jwt JWT
+	cfg *config.Configuration
 }
 
 type UserDB interface {
@@ -32,6 +35,8 @@ type UserDB interface {
 
 type Crypter interface {
 	CompareHashAndPassword(hasedPwd string, rawPwd string) bool
+	GenRefreshToken(secret string) (string, error)
+	ValidateRefreshToken(token, secret string) bool
 	UID() string
 }
 

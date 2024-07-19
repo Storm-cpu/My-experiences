@@ -6,3 +6,7 @@ type AuthToken struct {
 	ExpiresIn    int    `json:"expires_in,omitempty"`
 	RefreshToken string `json:"refresh_token,omitempty"`
 }
+
+type RefreshToken struct {
+	ExpiredAt int64 `json:"expired_at"`
+}
