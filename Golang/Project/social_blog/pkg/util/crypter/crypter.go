@@ -72,19 +72,24 @@ func (s *Service) GenRefreshToken(secret string) (string, error) {
 func (s *Service) ValidateRefreshToken(token, secret string) bool {
 	d, err := s.DecryptTripleDES([]byte(secret), token)
 	if err != nil {
-		fmt.Println("===== err Decrypt", err.Error())
+		fmt.Println("Error decrypting token:", err.Error())
+		return false
 	}
 
-	fmt.Println("==== d", *d)
+	if d == nil {
+		fmt.Println("Decrypted data is nil")
+		return false
+	}
+
+	fmt.Println("Decrypted data:", *d)
 
 	result := new(model.RefreshToken)
 	if err := json.Unmarshal([]byte(*d), result); err != nil {
-		fmt.Println("===== err Unmarshal", err.Error())
+		fmt.Println("Error unmarshaling JSON:", err.Error())
 		return false
 	}
 
 	t := time.Unix(result.ExpiredAt, 0)
-
 	return t.After(time.Now())
 }
 
