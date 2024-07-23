@@ -14,4 +14,5 @@ func Run() {
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Blog{})
 	db.AutoMigrate(&model.Comment{})
+	db.AutoMigrate(&model.Category{})
 }
