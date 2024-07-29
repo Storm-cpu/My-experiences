@@ -1,12 +1,12 @@
 # TABLE OF CONTENT
-1. [ Goroutine ](#goroutine)
+1. [ Goroutines ](#goroutines)
 2. [ Channels ](#channels)
 2. [ sync.WaitGroups ](#waitgroups)
 
-<a name="goroutine"></a>
-## Goroutine
+<a name="goroutines"></a>
+## Goroutines
 ### Concept 
-- Goroutine là một luồng nhẹ trong go. Nó giống như một thread trong những ngôn ngữ khác nhưng nhẹ hơn nhiều (5kb).
+- Goroutine là một luồng nhẹ trong go. Nó giống như một thread trong những ngôn ngữ khác nhưng nhẹ hơn nhiều.
 - Goroutine được quản lý thông qua các công cụ đồng bộ hóa như channels và sync.WaitGroups.
 ### Syntax
 ``` go FunctionName() ```
@@ -40,7 +40,8 @@ func main() {
     // Đợi một chút để các goroutine hoàn thành
     time.Sleep(1 * time.Second)
     fmt.Println("Main goroutine ends")
-} ```
+}
+```
 - Trong ví dụ trên, hàm printNumbers và printLetters được chạy đồng thời như hai goroutine. Goroutine chính (main) đợi một chút để hai goroutine kia hoàn thành công việc của nó. 
 ### Use Cases
 - Khi một tác vụ có thể được chia thành nhiều luồng để thực hiện tốt hơn
@@ -49,6 +50,56 @@ func main() {
 - Xử lý nhiều request đồng thời trong các luồng riêng biệt khi các request này không phụ thuộc lẫn nhau
 
 <a name="channels"></a>
-## Channel
+## Channels
+### Concept
 
 <a name="waitgroups"></a>
+## sync.WaitGroups
+### Concept
+- sync.WaitGroups được dùng để chờ đợi một tập hợp các goroutine hoàn thành công việc giúp đồng bộ hóa các goroutine
+### Syntax
+```
+// Khai báo một "WaitGroup"
+var wg sync.WaitGroup
+
+// Thêm n goroutine vào danh sách chờ
+wg.Add(n)
+
+// Trong mỗi goroutine, gọi phương thức Done khi công việc hoàn thành để giảm số lượng goroutine đang chờ đợi đi 1.
+wg.Done()
+
+// Chờ tất cả goroutine hoàn thành
+wg.Wait()
+```
+### Example
+```
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func worker(id int, wg *sync.WaitGroup) {
+    defer wg.Done() // Thông báo khi goroutine hoàn thành
+    fmt.Printf("Worker %d starting\n", id)
+    time.Sleep(time.Second) // Giả lập công việc bằng cách ngủ 1 giây
+    fmt.Printf("Worker %d done\n", id)
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    for i := 1; i <= 5; i++ {
+        wg.Add(1) // Tăng số lượng goroutine cần chờ đợi
+        go worker(i, &wg) // Khởi chạy goroutine
+    }
+
+    wg.Wait() // Chờ tất cả các goroutine hoàn thành
+    fmt.Println("All workers done")
+}
+```
+### Use Cases
+- Chờ tất cả goroutine hoàn thành trước khi tiếp tục
+- Xử lý các tác vụ chạy backgroud
