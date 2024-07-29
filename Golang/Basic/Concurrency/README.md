@@ -40,7 +40,8 @@ func main() {
     // Đợi một chút để các goroutine hoàn thành
     time.Sleep(1 * time.Second)
     fmt.Println("Main goroutine ends")
-} ```
+}
+```
 - Trong ví dụ trên, hàm printNumbers và printLetters được chạy đồng thời như hai goroutine. Goroutine chính (main) đợi một chút để hai goroutine kia hoàn thành công việc của nó. 
 ### Use Cases
 - Khi một tác vụ có thể được chia thành nhiều luồng để thực hiện tốt hơn
