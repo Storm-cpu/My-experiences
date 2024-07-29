@@ -40,7 +40,7 @@ func (s *Auth) loginUser(u *model.User) (*model.AuthToken, error) {
 		return nil, ErrGenerateToken.SetInternal(err)
 	}
 
-	refreshToken, err := s.cr.GenRefreshToken(s.cfg.JwtSecret)
+	refreshToken, err := s.cr.GenRefreshToken(s.cfg.JwtAdminSecret)
 	if err != nil {
 		return nil, ErrGenerateToken.SetInternal(err)
 	}
@@ -58,7 +58,7 @@ func (s *Auth) RefreshToken(ctx context.Context, data RefreshTokenData) (*model.
 	if err != nil || usr == nil {
 		return nil, ErrInvalidRefreshToken.SetInternal(err)
 	}
-	if !s.cr.ValidateRefreshToken(usr.RefreshToken, s.cfg.JwtSecret) {
+	if !s.cr.ValidateRefreshToken(usr.RefreshToken, s.cfg.JwtAdminSecret) {
 		return nil, ErrInvalidRefreshToken
 	}
 	return s.loginUser(usr)

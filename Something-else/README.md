@@ -1,4 +1,4 @@
-# Mục lục
+# TABLE OF CONTENT
 1. [ Repository Pattern ](#repository)
 2. [ Unit of Work (UoW) ](#uow)
 3. [ Object-relational Mapping (ORM) ](#orm)

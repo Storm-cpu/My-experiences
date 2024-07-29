@@ -37,7 +37,7 @@ func main() {
 	ctdb := categoryDB.NewDB(&cfg)
 
 	crypterSvc := crypter.New()
-	jwtAdminSvc := jwt.New(cfg.JwtAlgorithm, cfg.JwtSecret, cfg.JwtDuration)
+	jwtAdminSvc := jwt.New(cfg.JwtAdminAlgorithm, cfg.JwtAdminSecret, cfg.JwtAdminDuration)
 
 	authAdminSvc := adminAuth.New(db, udb, crypterSvc, jwtAdminSvc, &cfg)
 	adminUserSvc := adminUser.New(db, udb, crypterSvc)

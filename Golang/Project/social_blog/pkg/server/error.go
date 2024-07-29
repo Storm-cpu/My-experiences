@@ -160,7 +160,6 @@ var validationErrors = map[string]string{
 	"max":      "'s value or length is bigger than allowed",
 	"date":     "'s value should be in form of YYYY-MM-DD",
 	"email":    "'s value should be a valid email address",
-	"mobile":   "'s value should be a valid mobile number",
 }
 
 func getVldErrorMsg(v validator.FieldError) string {

@@ -19,9 +19,9 @@ type Configuration struct {
 	ReadTimeout  int
 	WriteTimeout int
 
-	JwtSecret    string
-	JwtDuration  int
-	JwtAlgorithm string
+	JwtAdminSecret    string
+	JwtAdminDuration  int
+	JwtAdminAlgorithm string
 }
 
 func LoadConfig() Configuration {
@@ -40,9 +40,9 @@ func LoadConfig() Configuration {
 	readTimeout, _ := strconv.Atoi(os.Getenv("READ_TIMEOUT"))
 	writeTimeout, _ := strconv.Atoi(os.Getenv("WRITE_TIMEOUT"))
 
-	jwtSecret := os.Getenv("JWT_SECRET")
-	jwtDuration, _ := strconv.Atoi(os.Getenv("JWT_DURATION"))
-	jwtAlgorithm := os.Getenv("JWT_ALGORITHM")
+	jwtAdminSecret := os.Getenv("JWT_SECRET")
+	jwtAdminDuration, _ := strconv.Atoi(os.Getenv("JWT_DURATION"))
+	jwtAdminAlgorithm := os.Getenv("JWT_ALGORITHM")
 
 	config := Configuration{
 		PostgresHost:     postgresHost,
@@ -55,9 +55,9 @@ func LoadConfig() Configuration {
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
 
-		JwtSecret:    jwtSecret,
-		JwtDuration:  jwtDuration,
-		JwtAlgorithm: jwtAlgorithm,
+		JwtAdminSecret:    jwtAdminSecret,
+		JwtAdminDuration:  jwtAdminDuration,
+		JwtAdminAlgorithm: jwtAdminAlgorithm,
 	}
 
 	return config

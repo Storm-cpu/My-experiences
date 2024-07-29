@@ -9,7 +9,6 @@
 
 <a name="select"></a>
 # SELECT
-
 ## Syntax
 ```
 SELECT column1, column2, ... FROM table_name;
@@ -85,7 +84,7 @@ NOT country = "china";
 <a name="procedure_function_trigger"></a>
 # Procedure, Function and Trigger
 
-## Procedure
+## PROCEDURE
 ### Syntax
 ```
 create [or replace] procedure procedure_name(parameter_list)
@@ -111,7 +110,7 @@ end;
 $$;
 ```
 
-## Function
+## FUNCTION
 ### Syntax
 ```
 create [or replace] function function_name(parameter_list)
@@ -144,7 +143,7 @@ end;
 $$;
 ```
 
-## Trigger
+## TRIGGER
 ### Syntax
 ```
 --Create function first
@@ -199,9 +198,9 @@ on card(gender,age);
 ```
 
 <a name="view_materialized_view"></a>
-# View and Materialized View
+# VIEW & MATERIALIZED VIEW
 
-## View
+## VIEW
 - Là table ảo dựa theo câu lệnh select
 - Giúp thao tác nhanh với dữ liệu
 - Nên dùng cho các truy vấn đơn giản và có khả năng tái sử dụng cao
@@ -218,7 +217,7 @@ create or replace view user_overview as
 select user_id, username, country from USER;
 ```
 
-## Materialized 
+## MATERIALIZED VIEW 
 - Nó giống như view nhưng nó sẽ lưu lại data khi truy vấn
 - Phải cập nhật lại data manualy bằng cách dùng refresh. `refresh materialized view view_name;`
 - Cần thêm không gian lưu trữ bộ nhớ
@@ -242,7 +241,7 @@ group by user_id;
 <a name="delete_truncate"></a>
 # Detele and Truncate
 
-## Delete
+## DELETE
 - Xóa các hàng dựa theo điều kiện
 - Có thể rollback nếu trong transaction
 - Chậm hơn khi xóa lượng lớn dữ liệu
