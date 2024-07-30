@@ -4,13 +4,13 @@
 2. [ sync.WaitGroups ](#waitgroups)
 
 <a name="goroutines"></a>
-## Goroutines
-### Concept 
+# Goroutines
+## Concept 
 - Goroutine là một luồng nhẹ trong go. Nó giống như một thread trong những ngôn ngữ khác nhưng nhẹ hơn nhiều.
 - Goroutine được quản lý thông qua các công cụ đồng bộ hóa như channels và sync.WaitGroups.
-### Syntax
+## Syntax
 ``` go FunctionName() ```
-### Example
+## Example
 ```
 package main
 
@@ -42,18 +42,18 @@ func main() {
     fmt.Println("Main goroutine ends")
 }
 ```
-### Use Cases
+## Use Cases
 - Khi một tác vụ có thể được chia thành nhiều luồng để thực hiện tốt hơn
 - Khi thực hiện nhiều request đến các API khác nhau
 - Chạy các background operations trong một chương trình
 - Xử lý nhiều request đồng thời trong các luồng riêng biệt khi các request này không phụ thuộc lẫn nhau
 
 <a name="channels"></a>
-## Channels
-### Concept
+# Channels
+## Concept
 - Channel là một cấu trúc dữ liệu dùng để giao tiếp và đồng bộ hóa giữa các goroutine. 
 - Channel cho phép một goroutine nhận và gữi giá trị từ một goroutine khác.
-### Syntax
+## Syntax
 ```
 // Tạo channel
 ch := make(chan int) // Tạo một unbuffered channel và truyền vào kiểu int
@@ -66,7 +66,7 @@ value := <-ch // Nhận giá trị từ channel ch và gán cho biến value
 // Đóng channel
 close(ch)
 ```
-### Example
+## Example
 ```
 package main
 
@@ -88,15 +88,15 @@ func main() {
 	fmt.Printf("Received value: %d\n", value)
 }
 ```
-### Use Cases
+## Use Cases
 - Dùng channel khi muốn giao tiếp giữa các goroutine
 - Để đồng bộ hóa (Synchronization)
 
 <a name="waitgroups"></a>
-## sync.WaitGroups
-### Concept
+# sync.WaitGroups
+## Concept
 - sync.WaitGroups được dùng để chờ đợi một tập hợp các goroutine hoàn thành công việc giúp đồng bộ hóa các goroutine
-### Syntax
+## Syntax
 ```
 // Khai báo một "WaitGroup"
 var wg sync.WaitGroup
@@ -110,7 +110,7 @@ wg.Done()
 // Chờ tất cả goroutine hoàn thành
 wg.Wait()
 ```
-### Example
+## Example
 ```
 package main
 
@@ -139,6 +139,6 @@ func main() {
     fmt.Println("All workers done")
 }
 ```
-### Use Cases
+## Use Cases
 - Chờ tất cả goroutine hoàn thành trước khi tiếp tục
 - Xử lý các tác vụ chạy backgroud
