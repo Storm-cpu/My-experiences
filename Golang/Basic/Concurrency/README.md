@@ -37,14 +37,11 @@ func main() {
     go printNumbers() // Khởi chạy goroutine đầu tiên
     go printLetters() // Khởi chạy goroutine thứ hai
 
-    // Đợi một chút để các goroutine hoàn thành
+    // Đợi để các goroutine hoàn thành
     time.Sleep(1 * time.Second)
     fmt.Println("Main goroutine ends")
 }
 ```
-}
-```
-- Trong ví dụ trên, hàm printNumbers và printLetters được chạy đồng thời như hai goroutine. Goroutine chính (main) đợi một chút để hai goroutine kia hoàn thành công việc của nó. 
 ### Use Cases
 - Khi một tác vụ có thể được chia thành nhiều luồng để thực hiện tốt hơn
 - Khi thực hiện nhiều request đến các API khác nhau
@@ -54,6 +51,46 @@ func main() {
 <a name="channels"></a>
 ## Channels
 ### Concept
+- Channel là một cấu trúc dữ liệu dùng để giao tiếp và đồng bộ hóa giữa các goroutine. 
+- Channel cho phép một goroutine nhận và gữi giá trị từ một goroutine khác.
+### Syntax
+```
+// Tạo channel
+ch := make(chan int) // Tạo một unbuffered channel và truyền vào kiểu int
+ch := make(chan int, 2) // Tạo một buffered channel có buffer với capacity là 2
+
+// Gữi và nhận giá trị
+ch <- 10 // Gửi giá trị 10 vào channel ch
+value := <-ch // Nhận giá trị từ channel ch và gán cho biến value
+
+// Đóng channel
+close(ch)
+```
+### Example
+```
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ch := make(chan int)
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		ch <- 42
+	}()
+
+	fmt.Println("Waiting for value...")
+	value := <-ch
+	fmt.Printf("Received value: %d\n", value)
+}
+```
+### Use Cases
+- Dùng channel khi muốn giao tiếp giữa các goroutine
+- Để đồng bộ hóa (Synchronization)
 
 <a name="waitgroups"></a>
 ## sync.WaitGroups
