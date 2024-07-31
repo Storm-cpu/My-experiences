@@ -50,8 +50,6 @@ func main() {
 		result := db.First(&person, "id = ?", personID)
 		if result.Error != nil {
 			if result.Error == gorm.ErrRecordNotFound {
-				fmt.Println("Record not found in PostgreSQL.")
-
 				emptyResponse := map[string]interface{}{personKey: nil}
 				emptyResponseJSON, err := json.Marshal(emptyResponse)
 				if err != nil {
@@ -64,6 +62,7 @@ func main() {
 					return
 				}
 				val = string(emptyResponseJSON)
+
 			} else {
 				log.Fatal(result.Error)
 				return
@@ -83,6 +82,7 @@ func main() {
 
 			val = string(personData)
 		}
+		fmt.Println("Loading Success!")
 	} else if err != nil {
 		fmt.Printf("failed to get value from redis: %s \n", err.Error())
 		return
@@ -90,12 +90,12 @@ func main() {
 		fmt.Println("Cache hit.")
 	}
 
-	// Refresh all data in Redis
-	// err = client.FlushDB(context.Background()).Err()
-	// if err != nil {
-	// 	fmt.Printf("failed to flush redis database: %s \n", err.Error())
-	// 	return
-	// }
+	fmt.Printf("Data: %s\n", val)
 
-	fmt.Println(val)
+	// Refresh all data in Redis
+	err = client.FlushDB(context.Background()).Err()
+	if err != nil {
+		fmt.Printf("failed to flush redis database: %s \n", err.Error())
+		return
+	}
 }

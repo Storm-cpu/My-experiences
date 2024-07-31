@@ -1,12 +1,13 @@
-# Table of Content
+# TABLE OF CONTENT
 1. SELECT 
-2. WHERE
+2. WHERE AND HAVING
 3. ORDER BY 
 4. PROCEDURE, FUNCTION, VIEW AND TRIGGER 
 5. INDEX 
-5. DELETE AND TRUNCATE 
+6. DELETE AND TRUNCATE 
 
 # SELECT
+- Là lệnh được dùng để chỉ định các cột để truy vấn từ một hoặc nhiều bảng trong cơ sở dữ liệu
 ## Syntax
 ```
 SELECT column1, column2, ... FROM table_name;
@@ -18,13 +19,15 @@ SELECT user_id, age FROM USER
 SELECT * FROM USER
 ```
 
-# WHERE
-## Syntax
+# WHERE and HAVING
+## WHERE
+- Dùng để chỉ định các điều kiện lọc trong một truy vấn
+### Syntax
 ```
 SELECT column1, column2, ... FROM table_name
 WHERE condition;
 ```
-## Example
+### Example
 ```
 SELECT * FROM USER
 WHERE user_id = 1
@@ -32,6 +35,39 @@ WHERE user_id = 1
 SELECT * FROM USER
 WHERE username = "wgioan2"
 ```
+## HAVING
+- Dùng để lộc các nhóm dữ liệu đã được nhóm lại bởi GROUP BY, COUNT, SUM,...
+### Syntax
+```
+SELECT column1, column2, aggregate_function(column)
+FROM table_name
+GROUP BY column1, column2, ...
+HAVING condition;
+```
+### Example
+```
+SELECT salesperson, SUM(amount) AS total_sales
+FROM sales
+GROUP BY salesperson
+HAVING SUM(amount) > 1000;
+```
+## Different between WHERE and HAVING
+| Mệnh đề WHERE                                  | Mệnh đề HAVING                                          |
+|------------------------------------------------|---------------------------------------------------------|
+| Có thể được sử dụng mà không cần GROUP BY.      | Thường được sử dụng cùng với GROUP BY.                  |
+| Không thể chứa các hàm tổng hợp (như SUM, AVG). | Có thể chứa các hàm tổng hợp.                           |
+| Có thể được sử dụng với các câu lệnh SELECT, UPDATE, DELETE. | Chỉ có thể được sử dụng với câu lệnh SELECT.  |
+| Sử dụng trước GROUP BY.                         | Sử dụng sau GROUP BY.                                   |
+| Sử dụng với các hàm áp dụng trên từng hàng như UPPER, LOWER, v.v. | Sử dụng với các hàm tổng hợp như SUM, COUNT, v.v. |
+
+### Syntax
+```
+SELECT column1, column2, aggregate_function(column)
+FROM table_name
+GROUP BY column1, column2, ...
+HAVING condition;
+```
+### Example
 
 # ORDER BY
 - Mặc định sẽ sắp xếp ở thứ thự tăng dần
@@ -66,7 +102,7 @@ OR age = 20
 NOT country = "china";
 ```
 
-# Procedure, Function and Trigger
+# PROCEDURE, FUNCTION and TRIGGER
 ## PROCEDURE
 ### Syntax
 ```
